@@ -1,0 +1,37 @@
+# Configuración de Render para FTP Manager
+# https://render.com/docs/yaml-spec
+
+services:
+  - type: web
+    name: ftp-manager
+    runtime: node
+    plan: free
+    region: frankfurt  # O region: oregon (USA)
+    buildCommand: npm install
+    startCommand: node server.js
+    envVars:
+      - key: NODE_VERSION
+        value: "18"
+      - key: NODE_ENV
+        value: "production"
+      - key: JWT_SECRET
+        generateValue: true  # Render genera automáticamente una clave segura
+      - key: PORT
+        value: "10000"  # Puerto interno de Render
+      # Configuración FTP - MODIFICA ESTOS VALORES con tus credenciales reales
+      - key: FTP_HOST
+        value: "82.98.168.246"
+      - key: FTP_USER
+        value: "roura-cevasa"
+      - key: FTP_PASS
+        value: "ImaginaAdm2015"
+      - key: FTP_PORT
+        value: "21"
+    # Health check para asegurar que la app responde
+    healthCheckPath: /api/health
+    # El disco gratuito es efímero (se borra al reiniciar)
+    # Solo usado para data/users.json
+    disk:
+      name: data
+      mountPath: /app/data
+      sizeGB: 0.5
